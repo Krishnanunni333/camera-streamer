@@ -1,8 +1,17 @@
 from flask import Flask, render_template, Response
 import cv2
+import time
+
 app = Flask(__name__)
 
 camera = cv2.VideoCapture(0)
+
+frame_width = int(video.get(3))
+frame_height = int(video.get(4))
+size = (frame_width, frame_height)
+
+filename = "cctv-{}-tracker.avi".format(time.strftime("%Y%m%d-%H%M%S"))
+result = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'MJPG'), 10, size)
 
 def gen_frames():
     while True:
@@ -10,6 +19,7 @@ def gen_frames():
         if not success:
             break
         else:
+            result.write(frame)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
